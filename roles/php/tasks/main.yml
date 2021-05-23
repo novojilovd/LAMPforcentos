@@ -1,0 +1,12 @@
+---
+- name: "PHP 5.6 install"
+  yum:
+    enablerepo: ["remi", "remi-php56"]
+    name: ["php", "php-common", "php-mysql", "php-mbstring", "php-mcrypt", "php-devel", "php-xml", "php-gd"]
+    state: present
+
+- name: "Apache restart"
+  ansibl.builtin.service:
+    state: restarted
+
+
