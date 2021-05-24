@@ -6,7 +6,8 @@
     state: present
 
 - name: "Apache restart"
-  ansibl.builtin.service:
+  ansible.builtin.service:
+    name: httpd
     state: restarted
-
+    enabled: yes
 
