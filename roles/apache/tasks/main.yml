@@ -10,22 +10,54 @@
     state: started
     enabled: yes
 
-- name: "Creation site directories"
-  ansible.builtin.shell: "mkdir /web && mkdir /web/{{ site }} && mkdir /web/{{ site }}/www && mkdir /web/{{ site }}/logs"
+- name: "Create directories for site #1"
+  ansible.builtin.file:
+    path: /web
+    state: directory
+    mode: '0755'
 
-- name: "Change owner to apache"
-  ansible.builtin.shell: "chown -R apache. /web"
+- name: "Create directories for site #2"
+  ansible.builtin.file:
+    path: "/web/{{ site }}"
+    state: directory
+    mode: '0755'
+
+- name: "Create directories for site #3"
+  ansible.builtin.file:
+    path: "/web/{{ site }}/www"
+    state: directory
+    mode: '0755'
+
+- name: "Create directories for site #4"
+  ansible.builtin.file:
+    path: "/web/{{ site }}/logs"
+    state: directory
+    mode: '0755'
+
+- name: "Change ownership to Apache"
+  ansible.builtin.file:
+    path: /web
+    state: directory
+    recurse: yes
+    owner: apache
+    group: apache
 
 - name: "Copy httpd.conf"
   ansible.builtin.copy:
     src: "{{ gitclonepath }}/roles/apache/templates/httpd.conf"
     dest: /etc/httpd/httpd.conf
+    owner: apache
+    group: apache
+    mode: '0644'
 
 # Using "example.com" check .conf file and var file
 - name: "Copy .conf file for site"
   ansible.builtin.copy: 
     src: "{{ gitclonepath }}/roles/apache/templates/{{ site }}.conf"
     dest: /etc/httpd/conf.d/{{ site }}.conf
+    owner: apache
+    group: apache
+    mode: '0644'
 
 - name: "Apache Restart"
   ansible.builtin.service:
@@ -36,5 +68,7 @@
   ansible.builtin.copy:
     src: "{{ gitclonepath }}/roles/apache/templates/httpd"
     dest: /etc/logrotate.d/httpd
-
+    owner: apache
+    group: apache
+    mode: '0644'
 
