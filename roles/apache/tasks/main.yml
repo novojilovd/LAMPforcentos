@@ -1,0 +1,40 @@
+---
+- name: "Apache Installation"
+  yum:
+    name: httpd
+    state: latest
+
+- name: "Apache Start and Enable"
+  ansible.builtin.service:
+    name: httpd
+    state: started
+    enabled: yes
+
+- name: "Creation site directories"
+  ansible.builtin.shell: "mkdir /web && mkdir /web/{{ site }} && mkdir /web/{{ site }}/www && mkdir /web/{{ site }}/logs"
+
+- name: "Change owner to apache"
+  ansible.builtin.shell: "chown -R apache. /web"
+
+- name: "Copy httpd.conf"
+  ansible.builtin.copy:
+    src: "{{ gitclonepath }}/roles/apache/templates/httpd.conf"
+    dest: /etc/httpd/httpd.conf
+
+# Using "example.com" check .conf file and var file
+- name: "Copy .conf file for site"
+  ansible.builtin.copy: 
+    src: "{{ gitclonepath }}/roles/apache/templates/{{ site }}.conf"
+    dest: /etc/httpd/conf.d/{{ site }}.conf
+
+- name: "Apache Restart"
+  ansible.builtin.service:
+    name: httpd
+    state: restarted
+
+- name: "Enable logs rotate for site"
+  ansible.builtin.copy:
+    src: "{{ gitclonepath }}/roles/apache/templates/httpd"
+    dest: /etc/logrotate.d/httpd
+
+
