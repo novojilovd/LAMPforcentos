@@ -1,4 +1,4 @@
 ---
 site: "example.com"
 gitclonepath: "/root/LAMPforcentos"
-
+password_root : "12345"
